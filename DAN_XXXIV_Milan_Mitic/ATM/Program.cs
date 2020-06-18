@@ -13,99 +13,106 @@ namespace ATM
 
         static void Main(string[] args)
         {
-            string numberOfClientsOne = "";
-            string numberOfClientsTwo = "";
-
-            uint numberOfClientsOneInt;
-            uint numberOfClientsTwoInt;
-
-            // ask a client to enter number of clients waiting in the line
-            while (!uint.TryParse(numberOfClientsOne, out numberOfClientsOneInt) && numberOfClientsOne != "#")
+            while (true)
             {
-                Console.WriteLine("Press '#' if you want to quit. Please enter only numbers.\nPlease enter number of clients for the first ATM:");
-                numberOfClientsOne = Console.ReadLine();
-            }
-            while (!uint.TryParse(numberOfClientsTwo, out numberOfClientsTwoInt) && numberOfClientsTwo != "#" && numberOfClientsOne != "#")
-            {
-                Console.WriteLine("Press '#' if you want to quit. Please enter only numbers.\nPlease enter number of clients for the second ATM:");
-                numberOfClientsTwo = Console.ReadLine();
-            }
+                string numberOfClientsOne = "";
+                string numberOfClientsTwo = "";
 
-            Thread[] array = new Thread[numberOfClientsOneInt + numberOfClientsTwoInt];
+                uint numberOfClientsOneInt;
+                uint numberOfClientsTwoInt;
 
-            if (numberOfClientsOneInt <= numberOfClientsTwoInt)
-            {
-                // creating threads for each client
-                int counter = 0;
-                for (int i = 0; counter < numberOfClientsOneInt; i = i + 2)
+                // ask a client to enter number of clients waiting in the line
+                while (!uint.TryParse(numberOfClientsOne, out numberOfClientsOneInt) && numberOfClientsOne != "#")
                 {
-                    Thread t = new Thread(() => WithdrawMoney());
-                    t.Name = "FirstLineClient" + Convert.ToString(counter + 1);
-
-                    array[i] = t;
-                    counter++;
+                    Console.WriteLine("Press '#' if you want to quit. Please enter only numbers.\nPlease enter number of clients for the first ATM:");
+                    numberOfClientsOne = Console.ReadLine();
+                }
+                while (!uint.TryParse(numberOfClientsTwo, out numberOfClientsTwoInt) && numberOfClientsTwo != "#" && numberOfClientsOne != "#")
+                {
+                    Console.WriteLine("Press '#' if you want to quit. Please enter only numbers.\nPlease enter number of clients for the second ATM:");
+                    numberOfClientsTwo = Console.ReadLine();
                 }
 
-                int name = 0;
-                for (int i = 1; i < array.Length; i++)
+                Thread[] array = new Thread[numberOfClientsOneInt + numberOfClientsTwoInt];
+
+                if (numberOfClientsOneInt <= numberOfClientsTwoInt)
                 {
-                    if (array[i] == null)
+                    // creating threads for each client
+                    int counter = 0;
+                    for (int i = 0; counter < numberOfClientsOneInt; i = i + 2)
                     {
                         Thread t = new Thread(() => WithdrawMoney());
-                        t.Name = "SecondLineClient" + Convert.ToString(name + 1);
+                        t.Name = "FirstLineClient" + Convert.ToString(counter + 1);
+
                         array[i] = t;
-                        name++;
+                        counter++;
                     }
-                    else
+
+                    int name = 0;
+                    for (int i = 1; i < array.Length; i++)
                     {
-                        continue;
+                        if (array[i] == null)
+                        {
+                            Thread t = new Thread(() => WithdrawMoney());
+                            t.Name = "SecondLineClient" + Convert.ToString(name + 1);
+                            array[i] = t;
+                            name++;
+                        }
+                        else
+                        {
+                            continue;
+                        }
                     }
                 }
-            }
-            else
-            {
-                // creating threads for each client
-                int counter = 0;
-                for (int i = 0; counter < numberOfClientsTwoInt; i = i + 2)
+                else
                 {
-                    Thread t = new Thread(() => WithdrawMoney());
-                    t.Name = "SecondLineClient" + Convert.ToString(counter + 1);
-
-                    array[i] = t;
-                    counter++;
-                }
-
-                int name = 0;
-                for (int i = 1; i < array.Length; i++)
-                {
-                    if (array[i] == null)
+                    // creating threads for each client
+                    int counter = 0;
+                    for (int i = 0; counter < numberOfClientsTwoInt; i = i + 2)
                     {
                         Thread t = new Thread(() => WithdrawMoney());
-                        t.Name = "FirstLineClient" + Convert.ToString(name + 1);
+                        t.Name = "SecondLineClient" + Convert.ToString(counter + 1);
+
                         array[i] = t;
-                        name++;
+                        counter++;
                     }
-                    else
+
+                    int name = 0;
+                    for (int i = 1; i < array.Length; i++)
                     {
-                        continue;
+                        if (array[i] == null)
+                        {
+                            Thread t = new Thread(() => WithdrawMoney());
+                            t.Name = "FirstLineClient" + Convert.ToString(name + 1);
+                            array[i] = t;
+                            name++;
+                        }
+                        else
+                        {
+                            continue;
+                        }
                     }
                 }
-            }
 
-            for (int i = 0; i < array.Length; i++)
-            {
-                try
+                for (int i = 0; i < array.Length; i++)
                 {
-                    array[i].Start();
-                    array[i].Join();
+                    try
+                    {
+                        array[i].Start();
+                        array[i].Join();
+                    }
+                    catch
+                    {
+                        Console.WriteLine("\t\nNumber of clients must be above 0.\n");
+                    }
                 }
-                catch
+                Console.WriteLine("\n\tPRESS '#' if you want to exit. Press any other key to continue.");
+                string close = Console.ReadLine();
+                if (close == "#")
                 {
-                    Console.WriteLine("\t\nNumber of clients must be above 0.\n");
+                    break;
                 }
             }
-
-            Console.ReadLine();
         }
 
         /// <summary>
