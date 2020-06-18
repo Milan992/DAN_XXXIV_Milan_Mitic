@@ -16,16 +16,16 @@ namespace ATM
             string numberOfClientsOne = "";
             string numberOfClientsTwo = "";
 
-            int numberOfClientsOneInt;
-            int numberOfClientsTwoInt;
+            uint numberOfClientsOneInt;
+            uint numberOfClientsTwoInt;
 
             // ask a client to enter number of clients waiting in the line
-            while (!int.TryParse(numberOfClientsOne, out numberOfClientsOneInt) && numberOfClientsOne != "#")
+            while (!uint.TryParse(numberOfClientsOne, out numberOfClientsOneInt) && numberOfClientsOne != "#")
             {
                 Console.WriteLine("Press '#' if you want to quit. Please enter only numbers.\nPlease enter number of clients for the first ATM:");
                 numberOfClientsOne = Console.ReadLine();
             }
-            while (!int.TryParse(numberOfClientsTwo, out numberOfClientsTwoInt) && numberOfClientsTwo != "#" && numberOfClientsOne != "#")
+            while (!uint.TryParse(numberOfClientsTwo, out numberOfClientsTwoInt) && numberOfClientsTwo != "#" && numberOfClientsOne != "#")
             {
                 Console.WriteLine("Press '#' if you want to quit. Please enter only numbers.\nPlease enter number of clients for the second ATM:");
                 numberOfClientsTwo = Console.ReadLine();
