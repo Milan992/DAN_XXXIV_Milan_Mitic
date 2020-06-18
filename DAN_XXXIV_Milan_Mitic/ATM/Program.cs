@@ -7,6 +7,8 @@ namespace ATM
     {
         // amount of the money left in the bank
         static int moneyLeft = 10000;
+
+        //object for lock
         static readonly object l = new object();
 
         static void Main(string[] args)
@@ -30,20 +32,19 @@ namespace ATM
             }
 
             Thread[] array = new Thread[numberOfClientsOneInt + numberOfClientsTwoInt];
-        //    Thread[] arrayTwo = new Thread[numberOfClientsTwoInt];
 
             // creating threads for each client
             for (int i = 0; i < array.Length; i = i + 2)
             {
                 Thread t = new Thread(() => WithdrawMoney());
-                t.Name = "FirstLineClient" + Convert.ToString(i);
+                t.Name = "FirstLineClient" + Convert.ToString(i / 2 + 1);
                 array[i] = t;
             }
 
             for (int i = 1; i < array.Length; i = i + 2)
             {
                 Thread t = new Thread(() => WithdrawMoney());
-                t.Name = "SecondLineClient" + Convert.ToString(i);
+                t.Name = "SecondLineClient" + Convert.ToString(i / 2 + 1);
                 array[i] = t;
             }
 
@@ -52,12 +53,6 @@ namespace ATM
                 array[i].Start();
                 array[i].Join();
             }
-
-            //for (int i = 0; i < arrayTwo.Length; i++)
-            //{
-            //    arrayTwo[i].Start();
-            //    arrayTwo[i].Join();
-            //}
 
             Console.ReadLine();
         }
@@ -72,14 +67,14 @@ namespace ATM
 
             lock (l)
             {
-                Thread.Sleep(500);
+                Thread.Sleep(20);
                 Console.WriteLine("------------------------------------");
-                Console.WriteLine("{0} tries to withdraw {1} dinars\n", Thread.CurrentThread.Name, amountToWithdraw);
+                Console.WriteLine("{0} tries to withdraw {1}\n", Thread.CurrentThread.Name, amountToWithdraw);
 
                 if (amountToWithdraw < moneyLeft)
                 {
                     moneyLeft = moneyLeft - amountToWithdraw;
-                    Console.WriteLine("{0}'s withdrawed {1} dinars\n", Thread.CurrentThread.Name, amountToWithdraw);
+                    Console.WriteLine("{0} withdrawed {1}\n", Thread.CurrentThread.Name, amountToWithdraw);
                     Console.WriteLine("Amount of money left in the ATM is:{0}\n", moneyLeft);
                 }
                 else
