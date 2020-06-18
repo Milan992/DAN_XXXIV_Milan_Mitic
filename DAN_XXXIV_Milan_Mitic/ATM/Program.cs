@@ -33,25 +33,76 @@ namespace ATM
 
             Thread[] array = new Thread[numberOfClientsOneInt + numberOfClientsTwoInt];
 
-            // creating threads for each client
-            for (int i = 0; i < array.Length; i = i + 2)
+            if (numberOfClientsOneInt <= numberOfClientsTwoInt)
             {
-                Thread t = new Thread(() => WithdrawMoney());
-                t.Name = "FirstLineClient" + Convert.ToString(i / 2 + 1);
-                array[i] = t;
-            }
+                // creating threads for each client
+                int counter = 0;
+                for (int i = 0; counter < numberOfClientsOneInt; i = i + 2)
+                {
+                    Thread t = new Thread(() => WithdrawMoney());
+                    t.Name = "FirstLineClient" + Convert.ToString(counter + 1);
 
-            for (int i = 1; i < array.Length; i = i + 2)
+                    array[i] = t;
+                    counter++;
+                }
+
+                int name = 0;
+                for (int i = 1; i < array.Length; i++)
+                {
+                    if (array[i] == null)
+                    {
+                        Thread t = new Thread(() => WithdrawMoney());
+                        t.Name = "SecondLineClient" + Convert.ToString(name + 1);
+                        array[i] = t;
+                        name++;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+            }
+            else
             {
-                Thread t = new Thread(() => WithdrawMoney());
-                t.Name = "SecondLineClient" + Convert.ToString(i / 2 + 1);
-                array[i] = t;
+                // creating threads for each client
+                int counter = 0;
+                for (int i = 0; counter < numberOfClientsTwoInt; i = i + 2)
+                {
+                    Thread t = new Thread(() => WithdrawMoney());
+                    t.Name = "SecondLineClient" + Convert.ToString(counter + 1);
+
+                    array[i] = t;
+                    counter++;
+                }
+
+                int name = 0;
+                for (int i = 1; i < array.Length; i++)
+                {
+                    if (array[i] == null)
+                    {
+                        Thread t = new Thread(() => WithdrawMoney());
+                        t.Name = "FirstLineClient" + Convert.ToString(name + 1);
+                        array[i] = t;
+                        name++;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
             }
 
             for (int i = 0; i < array.Length; i++)
             {
-                array[i].Start();
-                array[i].Join();
+                try
+                {
+                    array[i].Start();
+                    array[i].Join();
+                }
+                catch
+                {
+                    Console.WriteLine("\t\nNumber of clients must be above 0.\n");
+                }
             }
 
             Console.ReadLine();
