@@ -29,35 +29,35 @@ namespace ATM
                 numberOfClientsTwo = Console.ReadLine();
             }
 
-            Thread[] arrayOne = new Thread[numberOfClientsOneInt];
-            Thread[] arrayTwo = new Thread[numberOfClientsTwoInt];
+            Thread[] array = new Thread[numberOfClientsOneInt + numberOfClientsTwoInt];
+        //    Thread[] arrayTwo = new Thread[numberOfClientsTwoInt];
 
             // creating threads for each client
-            for (int i = 0; i < arrayOne.Length; i++)
+            for (int i = 0; i < array.Length; i = i + 2)
             {
                 Thread t = new Thread(() => WithdrawMoney());
                 t.Name = "FirstLineClient" + Convert.ToString(i);
-                arrayOne[i] = t;
+                array[i] = t;
             }
 
-            for (int i = 0; i < arrayTwo.Length; i++)
+            for (int i = 1; i < array.Length; i = i + 2)
             {
                 Thread t = new Thread(() => WithdrawMoney());
                 t.Name = "SecondLineClient" + Convert.ToString(i);
-                arrayTwo[i] = t;
+                array[i] = t;
             }
 
-            for (int i = 0; i < arrayOne.Length; i++)
+            for (int i = 0; i < array.Length; i++)
             {
-                arrayOne[i].Start();
-                arrayOne[i].Join();
+                array[i].Start();
+                array[i].Join();
             }
 
-            for (int i = 0; i < arrayTwo.Length; i++)
-            {
-                arrayTwo[i].Start();
-                arrayTwo[i].Join();
-            }
+            //for (int i = 0; i < arrayTwo.Length; i++)
+            //{
+            //    arrayTwo[i].Start();
+            //    arrayTwo[i].Join();
+            //}
 
             Console.ReadLine();
         }
@@ -72,7 +72,7 @@ namespace ATM
 
             lock (l)
             {
-                //   Thread.Sleep(500);
+                Thread.Sleep(500);
                 Console.WriteLine("------------------------------------");
                 Console.WriteLine("{0} tries to withdraw {1} dinars\n", Thread.CurrentThread.Name, amountToWithdraw);
 
